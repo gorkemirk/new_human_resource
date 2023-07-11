@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "568842008318",
+    "project_id": "humanresources-a285c",
+    "storage_bucket": "humanresources-a285c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568842008318:android:a36e0dc040675c0130d7af",
+        "android_client_info": {
+          "package_name": "com.example.new_human_resource"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "568842008318-2ln67toklssbqgga327jig412ddc8cck.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpSCaJRsR0BrAYnbMZ3m1I6VSjvhp4Kac"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "568842008318-2ln67toklssbqgga327jig412ddc8cck.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "568842008318-5memaki3n7qhfmgi4ii0hjsvqejbfekb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.humanResources"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
