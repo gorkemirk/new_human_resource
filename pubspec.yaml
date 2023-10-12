@@ -42,17 +42,18 @@ dependencies:
   cloud_firestore: ^3.4.2
   firebase_admin: ^0.2.0
   date_format: ^2.0.6
-  google_fonts: ^3.0.1
   image_picker: ^0.8.5+3
   firebase_storage: ^10.3.5
   cached_network_image: ^3.2.1
-  file_picker: ^5.0.1
+  file_picker: ^5.0.15
   url_launcher: ^6.1.5
   awesome_icons: ^1.1.0
   intl: ^0.17.0
   flutter_launcher_icons: ^0.10.0
-  flutter_datetime_picker: ^1.5.1
   curved_navigation_bar: ^1.0.3
+  google_fonts: ^4.0.4
+  flutter_datetime_picker_plus: ^2.1.0
+
 
 dev_dependencies:
   flutter_test:

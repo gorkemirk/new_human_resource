@@ -6,7 +6,7 @@ import '../AuthService/base_auth_service.dart';
 class LoginPage extends StatelessWidget {
   final AuthenticationService authenticationService;
   LoginPage({super.key, required this.authenticationService});
-  String loginImageUrl = "assets/images/logo.png";
+  String loginImageUrl = "assets/images/loginimage.jpeg";
   @override
   Widget build(BuildContext context) {
     double currentHeight = MediaQuery.of(context).size.height;
@@ -21,10 +21,10 @@ class LoginPage extends StatelessWidget {
               alignment: Alignment.topCenter,
               child: SizedBox(
                   height: currentHeight * 0.6,
-                  width: currentWidth * 0.8,
+                  width: currentWidth,
                   child: Image.asset(
                     loginImageUrl,
-                    fit: BoxFit.contain,
+                    fit: BoxFit.fill,
                   )),
             ),
             Align(
