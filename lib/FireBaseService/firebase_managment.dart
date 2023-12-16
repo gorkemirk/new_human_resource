@@ -301,14 +301,15 @@ class FireBaseManagment extends DatabaseServices {
       required int day,
       required int month,
       required int year,
-      required String uid}) async {
+      required String uid,
+      Timestamp? exitTime}) async {
     try {
       Map<String, dynamic> workdate = {
         "day": day,
         "month": month,
         "year": year,
         "uid": uid,
-        "exittime": null,
+        "exittime": exitTime,
         "entrytime": entryTime,
         "workedtime": 0.1,
         "workedtimecompleted": false
@@ -558,5 +559,71 @@ class FireBaseManagment extends DatabaseServices {
         .collection("messages")
         .where("adminID", isEqualTo: adminID)
         .snapshots();
+  }
+
+  @override
+  Future<List<String>> getLostWorkers() async {
+    var result = await firestore
+        .collection("isthere")
+        .where("isthere", isEqualTo: false)
+        .get();
+    List<String> lostWorkers = [];
+    for (var item in result.docs) {
+      lostWorkers.add(item.id);
+    }
+    return lostWorkers;
+  }
+
+  @override
+  Future<bool> updateIsthereDocumentsFalse() async {
+    try {
+      QuerySnapshot querySnapshot = await firestore
+          .collection('isthere')
+          .where('isthere', isEqualTo: true)
+          .get();
+
+      // Her bir belgeyi güncelle
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.update({'isthere': false});
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> setIsthereTrue(String documentId) async {
+    try {
+      await firestore
+          .collection('isthere')
+          .doc(documentId)
+          .update({'isthere': true});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> createIsThereDocument(String userId) async {
+    try {
+      await firestore.collection('isthere').doc(userId).set({'isthere': false});
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> DeleteHaveDayPropValue14() async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await firestore
+        .collection('workdates')
+        .where('day', isEqualTo: 14)
+        .get();
+
+    // Her bir belgeyi güncelle
+    for (var doc in querySnapshot.docs) {
+      await doc.reference.delete();
+    }
   }
 }

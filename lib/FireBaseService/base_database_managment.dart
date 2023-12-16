@@ -81,7 +81,8 @@ abstract class DatabaseServices {
       required int day,
       required int month,
       required int year,
-      required String uid});
+      required String uid,
+      Timestamp? exitTime});
   Future<bool> updateExitWorkTime(
       {required String uid,
       required Timestamp exitTime,
@@ -134,4 +135,9 @@ abstract class DatabaseServices {
       required bool isAdmin});
   Stream<QuerySnapshot<Map<String, dynamic>>> getAdminChats(
       {required String adminID});
+  Future<List<String>> getLostWorkers();
+  Future<bool> updateIsthereDocumentsFalse();
+  Future<bool> setIsthereTrue(String documentId);
+  Future<bool> createIsThereDocument(String userId);
+  Future<void> DeleteHaveDayPropValue14();
 }

@@ -216,6 +216,7 @@ class _CreateUserFormState extends ConsumerState<CreateUserForm> {
   Future<User?> registerUser() async {
     registeringUser = await authenticationService.registerUser(
         email: _emailTextController.text, password: _passTextController.text);
+    await databaseService.createIsThereDocument(registeringUser!.uid);
     return registeringUser;
   }
 

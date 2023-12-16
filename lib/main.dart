@@ -28,13 +28,14 @@ void main() async {
       debugPrint('User is signed in!');
     }
   });
+
   //await authenticationService.userLogOut();
   runApp(const ProviderScope(child: MyApp()));
 }
 
 AuthenticationService authenticationService = FirebaseAuthentication();
-DatabaseServices databaseService = FireBaseManagment();
 FireBaseStorage firebaseStorage = FireBaseStorage();
+DatabaseServices databaseService = FireBaseManagment();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

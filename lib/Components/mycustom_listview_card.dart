@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';
 import 'package:new_human_resource/Components/request_form.dart';
 import 'package:new_human_resource/Pages/user_checking_page.dart';
 import 'package:new_human_resource/main.dart';
@@ -49,8 +51,10 @@ class _MyCustomListViewItemState extends ConsumerState<MyCustomListViewItem> {
         : "${widget.workdate!["month"]}";
     year = "${widget.workdate!["year"]}";
     date = "$day/$month/$year";
+
     double workedtime = (widget.workdate!["workedtime"] as double).toDouble();
     bool workTimeCompleted = (widget.workdate!["workedtimecompleted"] as bool);
+    var time = DateTime.utc(int.parse(year), int.parse(month), int.parse(day));
     return Card(
       child: ListTile(
           title: Row(
@@ -95,7 +99,7 @@ class _MyCustomListViewItemState extends ConsumerState<MyCustomListViewItem> {
                             builder: (context) {
                               return AlertDialog(
                                 title: Text(
-                                  "Work informations to $date",
+                                  "$date ${DateFormat('EEEE').format(time)}",
                                   style: TextStyle(
                                       color: HexColor("4e7596"),
                                       fontSize: 18.h),

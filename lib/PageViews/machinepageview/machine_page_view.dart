@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -17,8 +19,23 @@ final _formkey = GlobalKey<FormState>();
 TextEditingController _fingerPrintTextController = TextEditingController();
 String? currentUserID;
 Map<String, Map<String, dynamic>> usersWorkDates = {};
+Timer? _timer;
 
 class _MachinePageViewState extends State<MachinePageView> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     double currenWitdh = MediaQuery.of(context).size.width;
@@ -56,6 +73,8 @@ class _MachinePageViewState extends State<MachinePageView> {
                       backgroundColor: HexColor("4e7596")),
                   onPressed: () async {
                     if (_formkey.currentState!.validate()) {
+                      var weekdays = findWeekdays(
+                          DateTime.now().year, DateTime.now().month);
                       _formkey.currentState!.save();
                       currentUserID =
                           await databaseService.getIDwithFingerPrint(
@@ -109,15 +128,18 @@ class _MachinePageViewState extends State<MachinePageView> {
                                           differenceTime >= 8 ? true : false);
 
                               isUpdatedWorkExit
+                                  // ignore: use_build_context_synchronously
                                   ? scaffoldMessanger(
                                       content: "Exit Aproved",
                                       color: Colors.green,
                                       context: context)
+                                  // ignore: use_build_context_synchronously
                                   : scaffoldMessanger(
                                       content: "Exit Failed.",
                                       color: Colors.red,
                                       context: context);
                             } else {
+                              // ignore: use_build_context_synchronously
                               scaffoldMessanger(
                                   content: "Try Again.",
                                   color: Colors.red,
@@ -125,30 +147,46 @@ class _MachinePageViewState extends State<MachinePageView> {
                             }
                           } else {
                             debugPrint("çıkış yapmıs");
+                            // ignore: use_build_context_synchronously
                             scaffoldMessanger(
                                 content: "You've already logged out",
                                 color: Colors.red,
                                 context: context);
                           }
                         } else {
-                          bool entryApproved =
-                              await databaseService.createEntryWorkTime(
-                                  entryTime: Timestamp.now(),
-                                  day: DateTime.now().day,
-                                  month: DateTime.now().month,
-                                  year: DateTime.now().year,
-                                  uid: currentUserID!);
-                          entryApproved
-                              ? scaffoldMessanger(
-                                  content: "Entry Aproved",
-                                  color: Colors.green,
-                                  context: context)
-                              : scaffoldMessanger(
-                                  content: "Entry Failed.",
-                                  color: Colors.red,
-                                  context: context);
+                          if (!weekdays.contains(DateTime.now())) {
+                            bool entryApproved =
+                                await databaseService.createEntryWorkTime(
+                                    entryTime: Timestamp.now(),
+                                    day: DateTime.now().day,
+                                    month: DateTime.now().month,
+                                    year: DateTime.now().year,
+                                    uid: currentUserID!);
+                            if (entryApproved) {
+                              await databaseService
+                                  .setIsthereTrue(currentUserID!);
+                            }
+                            entryApproved
+                                // ignore: use_build_context_synchronously
+                                ? scaffoldMessanger(
+                                    content: "Entry Aproved",
+                                    color: Colors.green,
+                                    context: context)
+                                // ignore: use_build_context_synchronously
+                                : scaffoldMessanger(
+                                    content: "Entry Failed.",
+                                    color: Colors.red,
+                                    context: context);
+                          } else {
+                            // ignore: use_build_context_synchronously
+                            scaffoldMessanger(
+                                content: "Today is not a work day",
+                                color: Colors.red,
+                                context: context);
+                          }
                         }
                       } else {
+                        // ignore: use_build_context_synchronously
                         scaffoldMessanger(
                             content:
                                 "Wrong fingerprint or some one went wrong try again.",
@@ -175,5 +213,45 @@ class _MachinePageViewState extends State<MachinePageView> {
         ),
       ),
     );
+  }
+
+  List<DateTime> findWeekdays(int year, int month) {
+    List<DateTime> weekdays = [];
+    int daysInMonth = DateTime(year, month + 1, 0).day;
+
+    for (int i = 1; i <= daysInMonth; i++) {
+      DateTime currentDay = DateTime(year, month, i);
+      if (currentDay.weekday >= DateTime.monday &&
+          currentDay.weekday <= DateTime.friday) {
+        weekdays.add(currentDay);
+      }
+    }
+
+    return weekdays;
+  }
+
+  void _startTimer() {
+    const oneSecond = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSecond, (Timer t) => _runFunction());
+  }
+
+  void _runFunction() async {
+    if (DateTime.now().hour == 22 &&
+        DateTime.now().minute == 47 &&
+        DateTime.now().second == 0) {
+      var lostWorkers = await databaseService.getLostWorkers();
+      if (lostWorkers.length != 0) {
+        for (int i = 0; i < lostWorkers.length; i++) {
+          await databaseService.createEntryWorkTime(
+              entryTime: Timestamp.now(),
+              day: DateTime.now().day,
+              month: DateTime.now().month,
+              year: DateTime.now().year,
+              uid: lostWorkers[i],
+              exitTime: Timestamp.now());
+        }
+        await databaseService.updateIsthereDocumentsFalse();
+      }
+    }
   }
 }

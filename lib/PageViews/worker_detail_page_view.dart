@@ -62,4 +62,20 @@ class WorkerDetailPageView extends StatelessWidget {
       },
     );
   }
+
+  //ay daki hafta içi tarihlerini bulur
+  List<DateTime> findWeekdays(int year, int month) {
+    List<DateTime> weekdays = [];
+    int daysInMonth = DateTime(year, month + 1, 0).day;
+
+    for (int i = 1; i <= daysInMonth; i++) {
+      DateTime currentDay = DateTime(year, month, i);
+      if (currentDay.weekday >= DateTime.monday &&
+          currentDay.weekday <= DateTime.friday) {
+        weekdays.add(currentDay);
+      }
+    }
+
+    return weekdays;
+  }
 }
